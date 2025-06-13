@@ -1,8 +1,3 @@
 fastapi
-uvicorn
-requests-html
-lxml[html_clean]
-seleniumbase
-beautifulsoup4
-nest_asyncio
 pydantic
+uvicorn
