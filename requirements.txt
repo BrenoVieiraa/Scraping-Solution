@@ -6,3 +6,4 @@ beautifulsoup4
 nest_asyncio
 pyppeteer
 fake-useragent
+lxml_html_clean
