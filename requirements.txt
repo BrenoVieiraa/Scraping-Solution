@@ -1,8 +1,8 @@
-fastapi==0.115.2
-uvicorn==0.34.0
-seleniumbase==4.39.3
-requests-html==0.10.0
-beautifulsoup4==4.13.4
-nest_asyncio==1.6.0
-pyppeteer==2.0.0
-fake-useragent==2.2.0
+fastapi
+uvicorn
+seleniumbase
+requests-html
+beautifulsoup4
+nest_asyncio
+pyppeteer
+fake-useragent
