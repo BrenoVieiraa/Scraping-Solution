@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-git+https://github.com/psf/requests-html.git
+requests-html
 lxml[html_clean]
 seleniumbase
 beautifulsoup4
