@@ -1,7 +1,7 @@
 fastapi
 uvicorn
 seleniumbase
-requests-html
+git+https://github.com/psf/requests-html.git
 beautifulsoup4
 nest_asyncio
 pyppeteer
