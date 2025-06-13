@@ -1,4 +1,3 @@
-import os
 import urllib.parse
 from urllib.parse import urlparse
 from seleniumbase import SB
@@ -14,26 +13,30 @@ def is_valid_url(url):
     ]
     return url not in exclusions
 
-# --- MUDANÇA: A função agora retorna a lista de links ---
 def extract_links_using_duckduckgo_regex(text_to_find: str, pages: int) -> List[str]:
     query = urllib.parse.quote_plus(text_to_find)
     base_url = f"https://duckduckgo.com/?q={query}&t=h_&ia=web"
 
-    with SB(uc=True, headless=True) as sb:
-        print("Opening browser...")
+    print("--> [SELENIUM] Inicializando o navegador...")
+    # --- MUDANÇA PRINCIPAL: Adicionado no_sandbox=True ---
+    with SB(uc=True, headless=True, no_sandbox=True) as sb:
+        print("--> [SELENIUM] Navegador iniciado. Abrindo URL do DuckDuckGo...")
         sb.open(base_url)
         sb.sleep(3)
+        print("--> [SELENIUM] Página aberta. Procurando mais resultados...")
 
         for page in range(pages):
-            print(f"Loading more results... {page + 1}")
+            print(f"--> [SELENIUM] Carregando mais resultados... {page + 1}")
             sb.scroll_to_bottom()
             sb.sleep(2)
             if sb.is_element_visible("#more-results"):
                 sb.click("#more-results")
                 sb.sleep(2)
             else:
+                print("--> [SELENIUM] Não há mais botão de 'mais resultados'.")
                 break
-
+        
+        print("--> [SELENIUM] Buscando o código fonte da página...")
         soup = BeautifulSoup(sb.get_page_source(), "html.parser")
         article_elements = soup.find_all("article")
         results = []
@@ -47,6 +50,5 @@ def extract_links_using_duckduckgo_regex(text_to_find: str, pages: int) -> List[
             if base_link and is_valid_url(base_link) and base_link not in results:
                 results.append(base_link)
 
-        # --- MUDANÇA: Remove a parte que salva em CSV e retorna a lista ---
-        print(f"Extração de links finalizada. {len(results)} links únicos encontrados.")
+        print(f"--> [SELENIUM] Extração de links finalizada. {len(results)} links únicos encontrados.")
         return results
