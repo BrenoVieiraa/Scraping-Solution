@@ -3,6 +3,7 @@ import urllib.parse
 from urllib.parse import urlparse
 from seleniumbase import SB
 from bs4 import BeautifulSoup
+from typing import List
 
 def is_valid_url(url):
     exclusions = [
@@ -13,11 +14,8 @@ def is_valid_url(url):
     ]
     return url not in exclusions
 
-def extract_links_using_duckduckgo_regex(text_to_find, pages):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    data_dir = os.path.join(current_dir, "data", "processed")
-    os.makedirs(data_dir, exist_ok=True)
-
+# --- MUDANÇA: A função agora retorna a lista de links ---
+def extract_links_using_duckduckgo_regex(text_to_find: str, pages: int) -> List[str]:
     query = urllib.parse.quote_plus(text_to_find)
     base_url = f"https://duckduckgo.com/?q={query}&t=h_&ia=web"
 
@@ -49,12 +47,6 @@ def extract_links_using_duckduckgo_regex(text_to_find, pages):
             if base_link and is_valid_url(base_link) and base_link not in results:
                 results.append(base_link)
 
-        csv_output = "\n".join(results)
-        output_file = os.path.join(data_dir, f"{text_to_find.replace(' ', '_')}.csv")
-        with open(output_file, "w", encoding="utf-8") as f:
-            f.write(csv_output)
-
-        print(f"Extracted data saved to {output_file}")
-
-if __name__ == "__main__":
-    extract_links_using_duckduckgo_regex("moda feminina sao paulo", 5)
+        # --- MUDANÇA: Remove a parte que salva em CSV e retorna a lista ---
+        print(f"Extração de links finalizada. {len(results)} links únicos encontrados.")
+        return results

@@ -1,21 +1,28 @@
-import os
 from extract_links_using_duckduckgo import extract_links_using_duckduckgo_regex
-from extract_data_from_any_site_using_regex import extract_data_from_any_site_using_regex
+from extract_data_from_any_site_using_regex import scrape_data_from_url
+from typing import List, Dict
 
-def run_pipeline():
-    text_to_find = "moda feminina sao paulo"
-    pages = 5
-
+# --- MUDANÇA: A função agora aceita parâmetros e retorna dados ---
+def run_pipeline(text_to_find: str, pages: int) -> List[Dict]:
+    
     print("[1] Extraindo links com DuckDuckGo...")
-    extract_links_using_duckduckgo_regex(text_to_find, pages)
+    # --- MUDANÇA: Recebe a lista de links em vez de salvar em arquivo ---
+    links_encontrados = extract_links_using_duckduckgo_regex(text_to_find, pages)
+    
+    if not links_encontrados:
+        print("Nenhum link encontrado pelo DuckDuckGo.")
+        return []
 
-    print("[2] Extraindo dados dos sites...")
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    raw_data_path = os.path.join("data", "processed", f"{text_to_find.replace(' ', '_')}.csv")
-    processed_data_dir = os.path.join("data", "processed")
+    print(f"[2] {len(links_encontrados)} links encontrados. Extraindo dados dos sites...")
+    
+    todos_os_leads = []
+    for link in links_encontrados:
+        print(f"Processando: {link}")
+        # --- MUDANÇA: Chama o scraper para cada link e recebe os dados ---
+        dados_do_site = scrape_data_from_url(link)
+        if dados_do_site:
+            todos_os_leads.append(dados_do_site)
 
-    extract_data_from_any_site_using_regex(raw_data=raw_data_path, processed_data_dir=processed_data_dir)
-    print("[3] Pipeline finalizado com sucesso!")
-
-if __name__ == "__main__":
-    run_pipeline()
+    print(f"[3] Pipeline finalizado! {len(todos_os_leads)} leads encontrados.")
+    # --- MUDANÇA: Retorna a lista completa de leads ---
+    return todos_os_leads
