@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from pipeline_gerar_leads import run_pipeline
 
-# --- NOVO: Modelo de entrada para validar o que a API recebe ---
+# --- Modelo de entrada para validar o que a API recebe ---
 class SearchInput(BaseModel):
     term: str
     pages: int = 1 # O número de páginas do DuckDuckGo a serem pesquisadas
@@ -15,22 +15,25 @@ app = FastAPI(
 @app.post("/gerar-leads-completo")
 def gerar_leads(search_input: SearchInput):
     """
-    Recebe um termo de busca e retorna uma lista de leads encontrados.
+    Versão de TESTE (Smoke Test) para verificar se a API responde.
+    Esta versão NÃO executa o pipeline de scraping.
     """
-    print(f"Iniciando pipeline para o termo: '{search_input.term}'")
-    try:
-        # --- MUDANÇA: Passa o input para o pipeline e recebe os resultados ---
-        leads_encontrados = run_pipeline(
-            text_to_find=search_input.term, 
-            pages=search_input.pages
-        )
-        
-        if not leads_encontrados:
-            return {"status": "sucesso", "message": "Nenhum lead encontrado.", "data": []}
-            
-        return {"status": "sucesso", "data": leads_encontrados}
+    # --- INÍCIO DO CÓDIGO DE TESTE ---
 
-    except Exception as e:
-        # Se algo der errado no pipeline, levanta uma exceção HTTP
-        print(f"Erro no pipeline: {e}")
-        raise HTTPException(status_code=500, detail=f"Ocorreu um erro interno: {str(e)}")
+    print("--- ENDPOINT DE TESTE FOI ATINGIDO COM SUCESSO ---")
+    print(f"Termo recebido do n8n: {search_input.term}")
+    print(f"Páginas recebidas do n8n: {search_input.pages}")
+
+    # A chamada para o pipeline pesado (run_pipeline) está desativada para este teste.
+    # Ao reativá-la, lembre-se de colocar o bloco de código dentro de um try...except.
+    
+    # Retorna uma resposta imediata para provar que a API está viva.
+    return {
+        "status": "sucesso - TESTE DE FUMAÇA OK",
+        "message": "A API está respondendo corretamente. O problema ocorre dentro do pipeline de scraping.",
+        "dados_recebidos": {
+            "termo": search_input.term,
+            "paginas": search_input.pages
+        }
+    }
+    # --- FIM DO CÓDIGO DE TESTE ---
