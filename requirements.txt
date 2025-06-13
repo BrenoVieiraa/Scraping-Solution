@@ -4,3 +4,5 @@ seleniumbase==4.39.3
 requests-html==0.10.0
 beautifulsoup4==4.13.0
 nest_asyncio==1.6.0
+pyppeteer==2.0.0
+fake-useragent==2.2.0
